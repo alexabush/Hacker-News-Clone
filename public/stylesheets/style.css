@@ -1,0 +1,62 @@
+/* Express Generator Default Styles */
+
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+/* Hacker News Styles */
+
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 14px;
+}
+.top-head {
+  font-weight: bold;
+}
+
+div > a.nav-item.nav-link.active.menu-link:hover,
+#nav__hack-or-snooze {
+  cursor: pointer;
+}
+
+div > a.nav-item.nav-link.active.menu-link:last-child {
+  border-left: 1px solid black;
+}
+
+div.main {
+  background-color: rgb(246, 246, 239);
+}
+
+section {
+  margin: 1%;
+}
+
+nav.hackSnoozeNav {
+  background-color: rgb(255, 102, 0);
+}
+
+/* form {
+  display: none;
+  transition: all 2s linear;
+} */
+
+/* .show-form {
+  display: block;
+} */
+
+.dont-display {
+  display: none;
+}
+
+.profile__main--story {
+  display: flex;
+  justify-content: space-between;
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="./stylesheets/style.css">
+  <title>Hacker News</title>
+</head>
+
+<body>
+  <div class="container main">
+    <!-- nav -->
+    <div class="row py-0">
+      <nav class="navbar navbar-expand-sm navbar-light col-12 py-0 hackSnoozeNav">
+
+        <span class="navbar-brand top-head" id='nav__hack-or-snooze'>Hacker News</span>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav menu-links">
+            <a class="nav-item nav-link active py-0 menu-link" id="submit-nav" href="#">Submit</a>
+            <a class="nav-item nav-link active py-0 menu-link" id="fav-nav" data-text-swap="All" href="#">Favorites</a>
+            <!-- <div class="navbar-nav menu-links"> -->
+            <a class="nav-item nav-link active py-0 menu-link" id="nav__signin" href="#">Sign in/Sign Up</a>
+            <!-- <a class="nav-item nav-link active py-0 menu-link" id="nav__signup" href="#">Sign Up</a> -->
+
+            <a class="nav-item nav-link active py-0 menu-link dont-display" id="nav__profile" href="#">My Profile</a>
+            <a class="nav-item nav-link active py-0 menu-link dont-display" id="nav__logout" href="#">Log Out</a>
+            <span id='welcome-text' class='dont-display'></span>
+          </div>
+
+        </div>
+      </nav>
+    </div>
+    <!-- form -->
+    <section class="row">
+      <form id='form__submit' class="col">
+        <div class="form-group row">
+          <label for="title" class="col-form-label ml-1">Title</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control col-sm-12" id="title" placeholder="Type Your Title Here" required>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="author" class="col-form-label ml-1">Author</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control col-sm-12" id="author" placeholder="Type Author Here" required>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="url" class="col-form-label ml-1">url</label>
+          <div class="col-sm-10">
+            <input type="url" class="form-control col-sm-12" id="url" placeholder="https://www.example.com" required>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="url" class="col-form-label ml-1">&nbsp;</label>
+          <button type="submit" class="btn btn-secondary btn-md ml-3">Submit</button>
+        </div>
+      </form>
+
+      <!-- signin form -->
+      <div id="form_wrapper" class="form_wrapper col">
+        <form id='form__signin' class="col active">
+          <!-- username -->
+          <div class="form-group row">
+            <label for="username" class="col-form-label">Username</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control col-sm-12" id="username" placeholder="Username" required>
+            </div>
+          </div>
+          <!-- password -->
+          <div class="form-group row">
+            <label for="Password" class="col-form-label ml-1">Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control col-sm-12" id="password" placeholder="Password" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="signInBtn" class="col-form-label ml-1">&nbsp;</label>
+            <button id='signInBtn' type="submit" class="btn btn-secondary btn-md ml-4">Submit</button>
+          </div>
+          <div class="form-group row">
+            <a href="#" rel="form__signup" id="back__signup">
+              Don't have an account yet? Register here
+            </a>
+          </div>
+        </form>
+
+        <!-- sign up form -->
+        <form id='form__signup' class="col">
+          <!-- name -->
+          <div class="form-group row">
+            <label for="name" class="col-form-label ml-1">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control col-sm-12" id="name__signup" placeholder="Name" required>
+            </div>
+          </div>
+          <!-- username -->
+          <div class="form-group row">
+            <label for="username" class="col-form-label ml-1">Username</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control col-sm-12" id="username__signup" placeholder="Username" required>
+            </div>
+          </div>
+          <!-- password -->
+          <div class="form-group row">
+            <label for="Password" class="col-form-label ml-1">Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control col-sm-12" id="password__signup" placeholder="Password" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="signupBtn" class="col-form-label ml-1">&nbsp;</label>
+            <button id='signupBtn' type="submit" class="btn btn-secondary btn-md ml-4">Submit</button>
+          </div>
+          <div class="form-group row"></div>
+          <a href="#" id="back__signin">
+            You have an account already? Log in here
+          </a>
+
+
+        </form>
+      </div>
+
+    </section>
+
+    <!-- Article list -->
+    <section id='article__list' class="row article-list">
+      <ol class="col-11 mx-auto">
+      </ol>
+    </section>
+
+    <section id="profile__main" class="dont-display">
+      <div class='container'>
+      </div>
+    </section>
+
+
+
+  </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.js " integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="
+      anonymous "></script>
+  <script src="./javascripts/script.js "></script>
+</body>
+
+</html>
