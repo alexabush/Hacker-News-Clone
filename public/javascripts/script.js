@@ -18,10 +18,14 @@ $(function() {
   const $formSignin = $('#form__signin');
   let $formSubmit = $('#form__submit');
 
+  let $profileMain = $('#profile__main');
+  let $profileMainDiv = $('#profile__main div');
+
+  let $articleList = $('#article__list');
   //returns to home page when hack or snooze text clicked
   $('#nav__hack-or-snooze').on('click', function() {
     $profileMain.addClass('dont-display');
-    $('#article__list').removeClass('dont-display');
+    $articleList.removeClass('dont-display');
     loadAllStories();
   });
 
@@ -87,7 +91,6 @@ $(function() {
       })
       .then(function(res) {
         $formSignup.trigger('reset');
-        //slide up isn't working, not sure why not
         $formSignup.slideToggle(1000);
         setWelcomeText(username);
         $navSignin.addClass('dont-display');
@@ -98,32 +101,31 @@ $(function() {
   });
 
   //SUBMIT FORM
-  $($formSubmit).on('submit', function () {
+  $($formSubmit).on('submit', function() {
     event.preventDefault();
     let titleVal = $('#title').val();
     let url = $('#url').val();
     let author = $('#author').val();
-    addStory(getUsername(), titleVal, author, url).then(function (res) {
+    addStory(getUsername(), titleVal, author, url).then(function(res) {
       $formSubmit.trigger('reset');
       $formSubmit.slideToggle(1000);
       loadAllStories();
     });
   });
 
-  $('#nav__profile').on('click', function() {
+  $navProfile.on('click', function() {
     event.preventDefault();
-    let $profileMain = $('#profile__main');
-    let $profileMainDiv = $('#profile__main div');
-    $('#article__list').addClass('dont-display');
+    $articleList.addClass('dont-display');
     $profileMain.removeClass('dont-display');
+    $profileMainDiv.empty();
     getUserInfo(getUsername()).then(function(res) {
       let { favorites, stories } = res.data;
       let name = $('<p>').text(`Name: ${res.data.name}`);
       let username = $('<p>').text(`Username: ${res.data.username}`);
-      $('#profile__main div').empty();
       $profileMainDiv.append(name, username);
-      for (let i = 0; i < favorites.length; i++) {
-        let { title, url, author, username, storyId } = favorites[i];
+      //display stories, starred stories first, then unstarred
+      for (let favorite of favorites) {
+        let { title, url, author, username, storyId } = favorite;
         appendArticle(
           $profileMainDiv,
           title,
@@ -134,8 +136,8 @@ $(function() {
           true
         );
       }
-      for (let i = 0; i < stories.length; i++) {
-        let { title, url, author, username, storyId } = stories[i];
+      for (let story of stories) {
+        let { title, url, author, username, storyId } = story;
         appendArticle(
           $profileMainDiv,
           title,
@@ -168,8 +170,8 @@ $(function() {
     );
     let $p = $('<p>').text(`Posted By: ${username} | Author: ${author}`);
     let $span3 = $('<span>')
-      .attr('id', 'storyId')
-      .addClass('dont-display')
+      // .attr('id', 'storyId')
+      .addClass('dont-display storyId')
       .text(storyId);
 
     $container.append($span1, title, $span2, $p, $span3);
@@ -177,7 +179,7 @@ $(function() {
     if (addDeleteButton === true) {
       let $deleteBtn = $('<button>', {
         text: 'X',
-        class: 'btn btn-secondary btn-xs',
+        class: 'btn btn-secondary btn-xs delete-btn',
         css: {
           height: 40
         }
@@ -187,12 +189,21 @@ $(function() {
     appendLocation.append($newArticle);
   }
 
+  // delete story handler
+  $('.main').on('click', '.delete-btn', function(event) {
+    $li = $(this).closest('li');
+    let storyId = $li.find('.storyId').text()
+    debugger
+    deleteStory(getUsername(), storyId)
+    $li.remove();
+  });
+
   /* STAR CLICK EVENT HANDLER*/
-  $('ol').on('click', '.fa-star', function(event) {
+  $('#article__list ol').on('click', '.fa-star', function(event) {
     let $target = $(event.target);
     let storyId = $target
       .closest('li')
-      .find('#storyId')
+      .find('.storyId')
       .text()
       .trim();
     if ($target.closest('li').hasClass('favorite')) {
@@ -208,7 +219,7 @@ $(function() {
     }
   });
 
-  $('#profile__main').on('click', '.fa-star', function(event) {
+  $profileMain.on('click', '.fa-star', function(event) {
     let $target = $(event.target);
     let storyId = $(event.target)
       .closest('li')
@@ -229,7 +240,6 @@ $(function() {
   });
 
   /* AJAX BUSINESSS */
-  /*##################################*/
   (function main() {
     loadAllStories();
   })();
@@ -277,7 +287,7 @@ $(function() {
 
   /*LOGIN EXISTING USER*/
   function login(username, password) {
-    debugger;
+    // debugger;
     return $.ajax({
       method: 'POST',
       url: 'https://hack-or-snooze.herokuapp.com/auth',
@@ -312,7 +322,7 @@ $(function() {
     });
   }
 
-  function deleteStory(storyId) {
+  function deleteStory(username, storyId) {
     let token = localStorage.getItem('token');
     return $.ajax({
       method: 'DELETE',
@@ -325,7 +335,6 @@ $(function() {
 
   /*ADD STORY TO LOGGED IN USER*/
   function addStory(username, title, author, url) {
-    // debugger;
     let token = localStorage.getItem('token');
     return $.ajax({
       method: 'POST',
@@ -345,7 +354,6 @@ $(function() {
   }
 
   function getUserList() {
-    // debugger;
     let token = localStorage.getItem('token');
     return $.ajax({
       url: 'https://hack-or-snooze.herokuapp.com/users',
@@ -361,7 +369,6 @@ $(function() {
   }
 
   function addFavoriteStory(username, storyId) {
-    // debugger;
     let token = localStorage.getItem('token');
     return $.ajax({
       method: 'POST',
@@ -383,27 +390,9 @@ $(function() {
     });
   }
 
-  /* 
-LOG OUT
-*/
+  /* LOG OUT */
   function logOutUser() {
     localStorage.clear();
     $('form').hide();
   }
 });
-
-//SIGN UP FORM JS
-
-// async function signUpUserWrittenByElie() {
-//   let name = $('#name__signup').val();
-//   let username = $('#username__signup').val();
-//   let password = $('#password__signup').val();
-//   try {
-//     let res = await signUpUser(name, username, password);
-//     let nextRes = await login(username, password);
-//     localStorage.setItem('token', res.data.token);
-//   } catch (e) {
-//     alert('you messed up!');
-//   }
-//   return username;
-// }
