@@ -9,6 +9,15 @@ $(function() {
 
   $('form').hide();
   console.log('function running');
+  let $navSignin = $('#nav__signin');
+  let $navSignup = $('#nav__signup');
+  let $navLogout = $('#nav__logout');
+  let $navProfile = $('#nav__profile');
+
+  const $formSignup = $('#form__signup');
+  const $formSignin = $('#form__signin');
+  let $formSubmit = $('#form__submit');
+
   //returns to home page when hack or snooze text clicked
   $('#nav__hack-or-snooze').on('click', function() {
     $profileMain.addClass('dont-display');
@@ -18,16 +27,12 @@ $(function() {
 
   $('#submit-nav').on('click', function() {
     if (localStorage.getItem('token') === null) return;
-    $('#form__submit').slideToggle(1000);
+    $formSubmit.slideToggle(1000);
   });
 
-  // change so doesn't work if sign up is displayed
-  const $formSignup = $('#form__signup');
-  const $formSignin = $('#form__signin');
-
-  $('#nav__signin').on('click', function() {
+  $navSignin.on('click', function() {
     if ($formSignup.is(':visible')) {
-      $formSignup.slideToggle(1000)
+      $formSignup.slideToggle(1000);
     } else {
       $formSignin.slideToggle(1000);
     }
@@ -45,46 +50,16 @@ $(function() {
     return false;
   });
 
-  $('#nav__logout').on('click', function() {
+  $navLogout.on('click', function() {
     logOutUser();
     setWelcomeText();
-    $('#nav__signin').removeClass('dont-display');
-    $('#nav__signup').removeClass('dont-display');
-    $('#nav__logout').addClass('dont-display');
-    $('#nav__profile').addClass('dont-display');
+    $navSignin.removeClass('dont-display');
+    $navSignup.removeClass('dont-display');
+    $navLogout.addClass('dont-display');
+    $navProfile.addClass('dont-display');
   });
 
-  //Favoriting NAV  AND DISPLAYING ONLY FAVORITES WHEN ONE CLICKS "FAVORITE"
-
-  $('#fav-nav').on('click', function() {
-    debugger;
-    event.preventDefault();
-    let $favNavTitle = $(this);
-    if ($favNavTitle.text() == $favNavTitle.data('text-swap')) {
-      $favNavTitle.text($favNavTitle.data('text-original'));
-    } else {
-      $favNavTitle.data('text-original', $favNavTitle.text());
-      $favNavTitle.text($favNavTitle.data('text-swap'));
-    }
-    $('li:not(.favorite)').toggleClass('dont-display');
-  });
-
-  //SUBMIT FORM JS
-  let $formSub = $('#form__submit');
-  $($formSub).on('submit', function() {
-    event.preventDefault();
-    let titleVal = $('#title').val();
-    let url = $('#url').val();
-    let author = $('#author').val();
-    addStory(getUsername(), titleVal, author, url).then(function(res) {
-      $formSub.trigger('reset');
-      $formSub.slideToggle(1000);
-      loadAllStories();
-    });
-  });
-
-  //SIGN IN FORM JS
-  // let $formSignin = $('#form__signin');
+  //SIGN IN FORM SUBMISSION
   $($formSignin).on('submit', function() {
     event.preventDefault();
     let username = $('#username').val();
@@ -94,53 +69,46 @@ $(function() {
       $formSignin.trigger('reset');
       $formSignin.slideToggle(1000);
       setWelcomeText(username);
-      $('#nav__signin').addClass('dont-display');
-      $('#nav__signup').addClass('dont-display');
-      $('#nav__logout').removeClass('dont-display');
-      $('#nav__profile').removeClass('dont-display');
+      $navSignin.addClass('dont-display');
+      $navSignup.addClass('dont-display');
+      $navLogout.removeClass('dont-display');
+      $navProfile.removeClass('dont-display');
     });
   });
 
-  //SIGN UP FORM JS
-
-  // async function signUpUserWrittenByElie() {
-  //   let name = $('#name__signup').val();
-  //   let username = $('#username__signup').val();
-  //   let password = $('#password__signup').val();
-  //   try {
-  //     let res = await signUpUser(name, username, password);
-  //     let nextRes = await login(username, password);
-  //     localStorage.setItem('token', res.data.token);
-  //   } catch (e) {
-  //     alert('you messed up!');
-  //   }
-  //   return username;
-  // }
-
-  let $formSignUp = $('#form__signup');
-  $($formSignUp).on('submit', function() {
+  $($formSignup).on('submit', function() {
     event.preventDefault();
     let name = $('#name__signup').val();
     let username = $('#username__signup').val();
     let password = $('#password__signup').val();
-    // debugger;
     signUpUser(name, username, password)
       .then(function(res) {
         return login(username, password);
       })
       .then(function(res) {
-        // signUpUserWrittenByElie().then(function(username) {
-        $formSignUp.trigger('reset');
+        $formSignup.trigger('reset');
         //slide up isn't working, not sure why not
-        $formSignUp.slideToggle(1000);
+        $formSignup.slideToggle(1000);
         setWelcomeText(username);
-        $('#nav__signin').addClass('dont-display');
-        $('#nav__signup').addClass('dont-display');
-        $('#nav__logout').removeClass('dont-display');
-        $('#nav__profile').removeClass('dont-display');
+        $navSignin.addClass('dont-display');
+        $navSignup.addClass('dont-display');
+        $navLogout.removeClass('dont-display');
+        $navProfile.removeClass('dont-display');
       });
   });
-  // });
+
+  //SUBMIT FORM
+  $($formSubmit).on('submit', function () {
+    event.preventDefault();
+    let titleVal = $('#title').val();
+    let url = $('#url').val();
+    let author = $('#author').val();
+    addStory(getUsername(), titleVal, author, url).then(function (res) {
+      $formSubmit.trigger('reset');
+      $formSubmit.slideToggle(1000);
+      loadAllStories();
+    });
+  });
 
   $('#nav__profile').on('click', function() {
     event.preventDefault();
@@ -309,7 +277,7 @@ $(function() {
 
   /*LOGIN EXISTING USER*/
   function login(username, password) {
-    // debugger;
+    debugger;
     return $.ajax({
       method: 'POST',
       url: 'https://hack-or-snooze.herokuapp.com/auth',
@@ -423,3 +391,19 @@ LOG OUT
     $('form').hide();
   }
 });
+
+//SIGN UP FORM JS
+
+// async function signUpUserWrittenByElie() {
+//   let name = $('#name__signup').val();
+//   let username = $('#username__signup').val();
+//   let password = $('#password__signup').val();
+//   try {
+//     let res = await signUpUser(name, username, password);
+//     let nextRes = await login(username, password);
+//     localStorage.setItem('token', res.data.token);
+//   } catch (e) {
+//     alert('you messed up!');
+//   }
+//   return username;
+// }
