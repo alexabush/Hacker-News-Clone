@@ -1,9 +1,16 @@
-$('form').hide();
 $(function() {
+  /* dev functions */
+  function border($element) {
+    $element.css('border', '10px solid black');
+  }
+  console.clear();
+
+  /* production functions */
+
+  $('form').hide();
+  console.log('function running');
   //returns to home page when hack or snooze text clicked
   $('#nav__hack-or-snooze').on('click', function() {
-    var $profileMain = $('#profile__main');
-    var $profileMainDiv = $('#profile__main div');
     $profileMain.addClass('dont-display');
     $('#article__list').removeClass('dont-display');
     loadAllStories();
@@ -14,19 +21,27 @@ $(function() {
     $('#form__submit').slideToggle(1000);
   });
 
+  // change so doesn't work if sign up is displayed
+  const $formSignup = $('#form__signup');
+  const $formSignin = $('#form__signin');
+
   $('#nav__signin').on('click', function() {
-    $('#form__signin').slideToggle(1000);
+    if ($formSignup.is(':visible')) {
+      $formSignup.slideToggle(1000)
+    } else {
+      $formSignin.slideToggle(1000);
+    }
   });
 
-  $('#back__signin').click(function() {
-    $('#form__signup').hide();
-    $('#form__signin').show();
+  $('#has-existing-login').click(() => {
+    $formSignup.hide();
+    $formSignin.show();
     return false;
   });
 
-  $('#back__signup').click(function() {
-    $('#form__signin').hide();
-    $('#form__signup').show();
+  $('#no-account-sign-up').click(() => {
+    $formSignin.hide();
+    $formSignup.show();
     return false;
   });
 
@@ -44,7 +59,7 @@ $(function() {
   $('#fav-nav').on('click', function() {
     debugger;
     event.preventDefault();
-    var $favNavTitle = $(this);
+    let $favNavTitle = $(this);
     if ($favNavTitle.text() == $favNavTitle.data('text-swap')) {
       $favNavTitle.text($favNavTitle.data('text-original'));
     } else {
@@ -55,12 +70,12 @@ $(function() {
   });
 
   //SUBMIT FORM JS
-  var $formSub = $('#form__submit');
+  let $formSub = $('#form__submit');
   $($formSub).on('submit', function() {
     event.preventDefault();
-    var titleVal = $('#title').val();
-    var url = $('#url').val();
-    var author = $('#author').val();
+    let titleVal = $('#title').val();
+    let url = $('#url').val();
+    let author = $('#author').val();
     addStory(getUsername(), titleVal, author, url).then(function(res) {
       $formSub.trigger('reset');
       $formSub.slideToggle(1000);
@@ -69,11 +84,11 @@ $(function() {
   });
 
   //SIGN IN FORM JS
-  var $formSignin = $('#form__signin');
+  // let $formSignin = $('#form__signin');
   $($formSignin).on('submit', function() {
     event.preventDefault();
-    var username = $('#username').val();
-    var password = $('#password').val();
+    let username = $('#username').val();
+    let password = $('#password').val();
     login(username, password).then(function(res) {
       localStorage.setItem('token', res.data.token);
       $formSignin.trigger('reset');
@@ -89,9 +104,9 @@ $(function() {
   //SIGN UP FORM JS
 
   // async function signUpUserWrittenByElie() {
-  //   var name = $('#name__signup').val();
-  //   var username = $('#username__signup').val();
-  //   var password = $('#password__signup').val();
+  //   let name = $('#name__signup').val();
+  //   let username = $('#username__signup').val();
+  //   let password = $('#password__signup').val();
   //   try {
   //     let res = await signUpUser(name, username, password);
   //     let nextRes = await login(username, password);
@@ -102,12 +117,12 @@ $(function() {
   //   return username;
   // }
 
-  var $formSignUp = $('#form__signup');
+  let $formSignUp = $('#form__signup');
   $($formSignUp).on('submit', function() {
     event.preventDefault();
-    var name = $('#name__signup').val();
-    var username = $('#username__signup').val();
-    var password = $('#password__signup').val();
+    let name = $('#name__signup').val();
+    let username = $('#username__signup').val();
+    let password = $('#password__signup').val();
     // debugger;
     signUpUser(name, username, password)
       .then(function(res) {
@@ -129,14 +144,14 @@ $(function() {
 
   $('#nav__profile').on('click', function() {
     event.preventDefault();
-    var $profileMain = $('#profile__main');
-    var $profileMainDiv = $('#profile__main div');
+    let $profileMain = $('#profile__main');
+    let $profileMainDiv = $('#profile__main div');
     $('#article__list').addClass('dont-display');
     $profileMain.removeClass('dont-display');
     getUserInfo(getUsername()).then(function(res) {
       let { favorites, stories } = res.data;
-      var name = $('<p>').text(`Name: ${res.data.name}`);
-      var username = $('<p>').text(`Username: ${res.data.username}`);
+      let name = $('<p>').text(`Name: ${res.data.name}`);
+      let username = $('<p>').text(`Username: ${res.data.username}`);
       $('#profile__main div').empty();
       $profileMainDiv.append(name, username);
       for (let i = 0; i < favorites.length; i++) {
@@ -175,16 +190,16 @@ $(function() {
     storyId,
     addDeleteButton
   ) {
-    var $newArticle = $('<li>').addClass('profile__main--story');
-    var $container = $('<div>');
-    var $span1 = $('<span>').html(
+    let $newArticle = $('<li>').addClass('profile__main--story');
+    let $container = $('<div>');
+    let $span1 = $('<span>').html(
       '<i class="far fa-star fa-sm" style="color:lightgrey"></i>'
     );
-    var $span2 = $('<span>').html(
+    let $span2 = $('<span>').html(
       `<a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>`
     );
-    var $p = $('<p>').text(`Posted By: ${username} | Author: ${author}`);
-    var $span3 = $('<span>')
+    let $p = $('<p>').text(`Posted By: ${username} | Author: ${author}`);
+    let $span3 = $('<span>')
       .attr('id', 'storyId')
       .addClass('dont-display')
       .text(storyId);
@@ -192,7 +207,7 @@ $(function() {
     $container.append($span1, title, $span2, $p, $span3);
     $newArticle.append($container);
     if (addDeleteButton === true) {
-      var $deleteBtn = $('<button>', {
+      let $deleteBtn = $('<button>', {
         text: 'X',
         class: 'btn btn-secondary btn-xs',
         css: {
@@ -206,8 +221,8 @@ $(function() {
 
   /* STAR CLICK EVENT HANDLER*/
   $('ol').on('click', '.fa-star', function(event) {
-    var $target = $(event.target);
-    var storyId = $target
+    let $target = $(event.target);
+    let storyId = $target
       .closest('li')
       .find('#storyId')
       .text()
@@ -226,8 +241,8 @@ $(function() {
   });
 
   $('#profile__main').on('click', '.fa-star', function(event) {
-    var $target = $(event.target);
-    var storyId = $(event.target)
+    let $target = $(event.target);
+    let storyId = $(event.target)
       .closest('li')
       .find('#storyId')
       .text()
@@ -319,7 +334,7 @@ $(function() {
   /*Get Individual User Document*/
   function getUserInfo(username) {
     // debugger;
-    var token = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
     return $.ajax({
       method: 'GET',
       url: `https://hack-or-snooze.herokuapp.com/users/${username}`,
@@ -373,7 +388,7 @@ $(function() {
   }
 
   function getUsername() {
-    var token = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
     return JSON.parse(atob(token.split('.')[1])).username;
   }
 
